@@ -10,13 +10,16 @@ from raioscli.control.region import (
     show_region
 )
 
+from raioscli.control.doctor import doctor as run_doctor
+
 app = typer.Typer(
     help="RAIOSCLI - Unified Multi-Cloud + Hypervisor CLI"
 )
 
-# ----------------------
+
+# ----------------------------------
 # Storage
-# ----------------------
+# ----------------------------------
 
 @app.command()
 def storageo(action: str, name: str, sync: str = ""):
@@ -34,9 +37,9 @@ def storageb(action: str, name: str, size: str = "20GB", sync: str = ""):
     handle_storageb(action, name, size, sync)
 
 
-# ----------------------
+# ----------------------------------
 # Region
-# ----------------------
+# ----------------------------------
 
 @app.command()
 def region(action: str):
@@ -51,9 +54,19 @@ def region(action: str):
         show_region()
 
     else:
-        print(
-            f"[RAIOS] Unknown region action: {action}"
-        )
+        print(f"[RAIOS] Unknown region action: {action}")
+
+
+# ----------------------------------
+# Doctor
+# ----------------------------------
+
+@app.command()
+def doctor():
+    """
+    Environment validation
+    """
+    run_doctor()
 
 
 if __name__ == "__main__":
