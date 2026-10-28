@@ -9,6 +9,14 @@ raioscli.egg-info/dependency_links.txt
 raioscli.egg-info/entry_points.txt
 raioscli.egg-info/requires.txt
 raioscli.egg-info/top_level.txt
+raioscli/cloudinit/controlplane.py
+raioscli/cloudinit/dataplane.py
+raioscli/cloudinit/seed.py
+raioscli/control/deploy.py
+raioscli/control/doctor.py
+raioscli/control/region.py
+raioscli/control/stack.py
+raioscli/control/status.py
 raioscli/core/commands.py
 raioscli/core/config.py
 raioscli/core/exec.py
@@ -17,6 +25,8 @@ raioscli/providers/aws.py
 raioscli/providers/azure.py
 raioscli/providers/base.py
 raioscli/providers/gcp.py
+raioscli/providers/hyperv.py
 raioscli/providers/raios.py
+raioscli/providers/utm.py
 raioscli/resources/storageb.py
 raioscli/resources/storageo.py
