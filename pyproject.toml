@@ -11,5 +11,5 @@ dependencies = [
 ]
 
 [project.scripts]
-raioscli = "raioscli.main:app"
+raios = "raioscli.main:app"
 

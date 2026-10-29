@@ -1,2 +1,2 @@
 [console_scripts]
-raioscli = raioscli.main:app
+raios = raioscli.main:app
