@@ -81,3 +81,31 @@ def provider_info():
         print("Status : ❌ Unavailable")
 
     print()
+
+def get_vm_info(name):
+
+    cmd = f"""
+Get-VM -Name "{name}" |
+Select-Object Name,State,ProcessorCount,MemoryStartup
+"""
+
+    return run_ps(cmd)
+
+
+def stop_vm(name):
+
+    cmd = f"""
+Stop-VM -Name "{name}" -Force
+"""
+
+    return run_ps(cmd)
+
+
+def delete_vm(name):
+
+    cmd = f"""
+Stop-VM -Name "{name}" -Force -ErrorAction SilentlyContinue
+Remove-VM -Name "{name}" -Force
+"""
+
+    return run_ps(cmd)

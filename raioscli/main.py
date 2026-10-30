@@ -19,7 +19,10 @@ from raioscli.control.compute import (
     compute_test,
     compute_list,
     compute_create,
-    compute_start
+    compute_start,
+    compute_stop,
+    compute_delete,
+    compute_info
 )
 
 app = typer.Typer(
@@ -36,9 +39,6 @@ def storageo(
     name: str,
     sync: str = ""
 ):
-    """
-    Object storage operations
-    """
     handle_storageo(action, name, sync)
 
 
@@ -49,9 +49,6 @@ def storageb(
     size: str = "20GB",
     sync: str = ""
 ):
-    """
-    Block storage operations
-    """
     handle_storageb(action, name, size, sync)
 
 
@@ -61,9 +58,6 @@ def storageb(
 
 @app.command()
 def region(action: str):
-    """
-    Region operations
-    """
 
     if action == "init":
         init_region()
@@ -86,9 +80,6 @@ def region(action: str):
 
 @app.command()
 def doctor():
-    """
-    Environment validation
-    """
     run_doctor()
 
 
@@ -101,9 +92,6 @@ def compute(
     action: str,
     name: Optional[str] = typer.Argument(None)
 ):
-    """
-    Compute operations
-    """
 
     if action == "test":
         compute_test()
@@ -116,6 +104,15 @@ def compute(
 
     elif action == "start":
         compute_start(name)
+
+    elif action == "stop":
+        compute_stop(name)
+
+    elif action == "delete":
+        compute_delete(name)
+
+    elif action == "info":
+        compute_info(name)
 
     else:
         print(
