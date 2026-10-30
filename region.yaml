@@ -1,0 +1,7 @@
+region:
+  name: demo
+controlplane:
+  memory: 2048
+dataplanes:
+  count: 1
+  memory: 2048

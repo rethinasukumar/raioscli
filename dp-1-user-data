@@ -1,0 +1,19 @@
+#cloud-config
+
+hostname: dp-1
+
+package_update: true
+package_upgrade: true
+
+write_files:
+  - path: /opt/raios/node-role
+    content: dataplane
+
+  - path: /opt/raios/node-id
+    content: dp-1
+
+runcmd:
+  - mkdir -p /opt/raios
+  - echo dataplane > /opt/raios/node-role
+  - echo dp-1 > /opt/raios/node-id
+  - echo "RAIOS Dataplane Bootstrapped"

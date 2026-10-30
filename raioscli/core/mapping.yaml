@@ -1,0 +1,13 @@
+services:
+  storageo:
+    aws: s3
+    gcp: storage
+    azure: blob
+    raios: storageo
+
+  storageb:
+    aws: ebs
+    gcp: pd
+    azure: managed_disk
+    raios: storageb
+

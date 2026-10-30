@@ -1,0 +1,15 @@
+[project]
+name = "raioscli"
+version = "0.1.0"
+description = "Unified Multi‑Cloud + Hypervisor CLI"
+requires-python = ">=3.10"
+
+dependencies = [
+    "typer",
+    "rich",
+    "pyyaml"
+]
+
+[project.scripts]
+raios = "raioscli.main:app"
+
