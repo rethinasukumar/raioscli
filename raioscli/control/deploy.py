@@ -6,13 +6,24 @@ from raioscli.cloudinit.seed import (
     generate_dataplane_seed
 )
 
+from raioscli.control.bootstrap import (
+    bootstrap_controlplane,
+    bootstrap_dataplane
+)
 
-def deploy_region(filename="region.yaml"):
+
+def deploy_region(
+    filename="region.yaml"
+):
 
     target = Path(filename)
 
     if not target.exists():
-        print("[RAIOS] region.yaml not found.")
+
+        print(
+            "[RAIOS] region.yaml not found."
+        )
+
         return
 
     data = yaml.safe_load(
@@ -20,7 +31,9 @@ def deploy_region(filename="region.yaml"):
     )
 
     print()
-    print("[RAIOS] Generating CloudInit...")
+    print(
+        "[RAIOS] Generating CloudInit..."
+    )
 
     cp_seed_iso = (
         generate_controlplane_seed()
@@ -31,34 +44,100 @@ def deploy_region(filename="region.yaml"):
     )
 
     print()
-    print("RAIOS DEPLOYMENT PLAN")
-    print("-" * 40)
+
+    try:
+
+        print(
+            "[RAIOS] Provisioning Controlplane..."
+        )
+
+        bootstrap_controlplane()
+
+        print(
+            "[RAIOS] Controlplane ready."
+        )
+
+    except Exception as e:
+
+        print(
+            f"[RAIOS] Controlplane failed: {e}"
+        )
+
+        return
+
+    print()
+
+    try:
+
+        print(
+            "[RAIOS] Provisioning Dataplane..."
+        )
+
+        bootstrap_dataplane()
+
+        print(
+            "[RAIOS] Dataplane ready."
+        )
+
+    except Exception as e:
+
+        print(
+            f"[RAIOS] Dataplane failed: {e}"
+        )
+
+        return
+
+    print()
+
+    print(
+        "RAIOS DEPLOYMENT PLAN"
+    )
+
+    print(
+        "-" * 40
+    )
 
     print()
     print("Controlplane")
     print("  Name   : cp-1")
+
     print(
         f"  Memory : "
         f"{data['controlplane']['memory']} MB"
     )
+
     print(
         f"  Seed   : {cp_seed_iso}"
     )
 
     print()
+
     print("Dataplane")
     print("  Name   : dp-1")
+
     print(
         f"  Memory : "
         f"{data['dataplanes']['memory']} MB"
     )
+
     print(
         f"  Seed   : {dp_seed_iso}"
     )
 
     print()
+
+    print("Network")
+
+    print(
+        f"  Switch : "
+        f"{data['network']['switch']}"
+    )
+
+    print()
+
     print("Provider : Hyper-V")
 
     print()
-    print("[RAIOS] CloudInit generated.")
-    print("[RAIOS] Plan generated.")
+    print(
+        "[RAIOS] Region deployed."
+    )

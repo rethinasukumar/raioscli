@@ -12,6 +12,7 @@ raioscli.egg-info/top_level.txt
 raioscli/cloudinit/controlplane.py
 raioscli/cloudinit/dataplane.py
 raioscli/cloudinit/seed.py
+raioscli/control/bootstrap.py
 raioscli/control/compute.py
 raioscli/control/deploy.py
 raioscli/control/doctor.py

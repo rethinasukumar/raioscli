@@ -1,9 +1,13 @@
 from pathlib import Path
 import yaml
 
+
 DEFAULT_REGION = {
     "region": {
-        "name": "demo"
+        "name": "ap-sg-1"
+    },
+    "network": {
+        "switch": "Default Switch"
     },
     "controlplane": {
         "memory": 2048
@@ -47,20 +51,36 @@ def show_region(filename="region.yaml"):
         print(f"[RAIOS] {filename} not found.")
         return
 
-    data = yaml.safe_load(target.read_text())
+    data = yaml.safe_load(
+        target.read_text()
+    )
 
     print()
     print("RAIOS REGION")
     print("-" * 30)
 
     print("Region:")
-    print(f"  Name       : {data['region']['name']}")
+    print(
+        f"  Name       : {data['region']['name']}"
+    )
+
+    print()
+    print("Network:")
+    print(
+        f"  Switch     : {data['network']['switch']}"
+    )
 
     print()
     print("Controlplane:")
-    print(f"  Memory MB  : {data['controlplane']['memory']}")
+    print(
+        f"  Memory MB  : {data['controlplane']['memory']}"
+    )
 
     print()
     print("Dataplanes:")
-    print(f"  Count      : {data['dataplanes']['count']}")
-    print(f"  Memory MB  : {data['dataplanes']['memory']}")
+    print(
+        f"  Count      : {data['dataplanes']['count']}"
+    )
+    print(
+        f"  Memory MB  : {data['dataplanes']['memory']}"
+    )

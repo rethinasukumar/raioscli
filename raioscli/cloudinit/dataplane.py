@@ -4,6 +4,20 @@ def generate_dataplane_user_data():
 
 hostname: dp-1
 
+users:
+  - default
+
+  - name: raios
+    groups: wheel
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+    plain_text_passwd: raios123
+
+ssh_pwauth: true
+chpasswd:
+  expire: false
+
 package_update: true
 package_upgrade: true
 
@@ -18,6 +32,5 @@ runcmd:
   - mkdir -p /opt/raios
   - echo dataplane > /opt/raios/node-role
   - echo dp-1 > /opt/raios/node-id
-  - echo "RAIOS Dataplane Bootstrapped"
+  - echo "RAIOS Dataplane Bootstrapped" > /var/log/raios-bootstrap.log
 """
-

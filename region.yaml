@@ -1,7 +1,12 @@
 region:
-  name: demo
+  name: ap-sg-1
+
+network:
+  switch: Default Switch
+
 controlplane:
   memory: 2048
+
 dataplanes:
   count: 1
   memory: 2048
