@@ -19,6 +19,10 @@ from raioscli.control.deploy import (
     deploy_region
 )
 
+from raioscli.control.destroy import (
+    region_destroy
+)
+
 from raioscli.control.doctor import (
     doctor as run_doctor
 )
@@ -75,7 +79,9 @@ def storageb(
 # ----------------------------------
 
 @app.command()
-def region(action: str):
+def region(
+    action: str
+):
 
     if action == "init":
 
@@ -92,6 +98,10 @@ def region(action: str):
     elif action == "deploy":
 
         deploy_region()
+
+    elif action == "destroy":
+
+        region_destroy()
 
     else:
 
@@ -156,5 +166,4 @@ def compute(
 
 
 if __name__ == "__main__":
-
     app()

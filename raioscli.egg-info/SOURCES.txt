@@ -15,6 +15,7 @@ raioscli/cloudinit/seed.py
 raioscli/control/bootstrap.py
 raioscli/control/compute.py
 raioscli/control/deploy.py
+raioscli/control/destroy.py
 raioscli/control/doctor.py
 raioscli/control/region.py
 raioscli/control/stack.py

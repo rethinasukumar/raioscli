@@ -85,27 +85,22 @@ def create_vm(
 
 def start_vm(name):
 
-    cmd = f"""
-    Start-VM -Name "{name}"
-    """
-
-    return run_ps(cmd)
+    return run_ps(
+        f'Start-VM -Name "{name}"'
+    )
 
 
 def stop_vm(name):
 
-    cmd = f"""
-    Stop-VM -Name "{name}" -Force
-    """
-
-    return run_ps(cmd)
+    return run_ps(
+        f'Stop-VM -Name "{name}" -Force'
+    )
 
 
 def delete_vm(name):
 
     cmd = f"""
     Stop-VM -Name "{name}" -Force -ErrorAction SilentlyContinue
-
     Remove-VM -Name "{name}" -Force -ErrorAction SilentlyContinue
     """
 
@@ -180,7 +175,12 @@ def set_boot_disk_first(vm_name):
 def get_vm_state(name):
 
     cmd = f"""
-    (Get-VM -Name "{name}").State
+    try {{
+        (Get-VM -Name "{name}" -ErrorAction Stop).State
+    }}
+    catch {{
+        ""
+    }}
     """
 
     result = run_ps(cmd)
@@ -200,9 +200,7 @@ def wait_for_vm(
 
     for _ in range(timeout):
 
-        state = get_vm_state(name)
-
-        if state == "Running":
+        if vm_is_running(name):
             return True
 
         time.sleep(1)
