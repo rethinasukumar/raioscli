@@ -1,18 +1,19 @@
 #cloud-config
-
 hostname: cp-1
 
 users:
   - default
-
   - name: raios
     groups: wheel
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
     lock_passwd: false
     plain_text_passwd: raios123
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEGVj/SFoqIu5MIdKo2CsXeV7xMpIEGXl3maxjvWEMm/ rethi@Rethinas-Book-Pro
 
 ssh_pwauth: true
+
 chpasswd:
   expire: false
 

@@ -1,6 +1,10 @@
 from pathlib import Path
 import yaml
 
+from raioscli.control.ssh import (
+    ensure_keypair
+)
+
 from raioscli.cloudinit.seed import (
     generate_controlplane_seed,
     generate_dataplane_seed
@@ -19,16 +23,27 @@ def deploy_region(
     target = Path(filename)
 
     if not target.exists():
-
         print(
             "[RAIOS] region.yaml not found."
         )
-
         return
 
     data = yaml.safe_load(
         target.read_text()
     )
+
+    print()
+    print(
+        "[RAIOS] Ensuring SSH keypair..."
+    )
+
+    try:
+        ensure_keypair()
+    except Exception as e:
+        print(
+            f"[RAIOS] SSH keypair failed: {e}"
+        )
+        return
 
     print()
     print(
@@ -46,7 +61,6 @@ def deploy_region(
     print()
 
     try:
-
         print(
             "[RAIOS] Provisioning Controlplane..."
         )
@@ -68,7 +82,6 @@ def deploy_region(
     print()
 
     try:
-
         print(
             "[RAIOS] Provisioning Dataplane..."
         )
@@ -88,7 +101,6 @@ def deploy_region(
         return
 
     print()
-
     print(
         "RAIOS DEPLOYMENT PLAN"
     )
@@ -98,6 +110,7 @@ def deploy_region(
     )
 
     print()
+
     print("Controlplane")
     print("  Name   : cp-1")
 
@@ -135,9 +148,12 @@ def deploy_region(
 
     print()
 
-    print("Provider : Hyper-V")
+    print(
+        "Provider : Hyper-V"
+    )
 
     print()
+
     print(
         "[RAIOS] Region deployed."
     )

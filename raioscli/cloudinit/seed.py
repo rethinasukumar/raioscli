@@ -10,8 +10,9 @@ from raioscli.cloudinit.dataplane import (
     generate_dataplane_user_data
 )
 
-
-CLOUDINIT_DIR = Path(".raios/cloudinit")
+CLOUDINIT_DIR = Path(
+    ".raios/cloudinit"
+)
 
 
 def generate_meta_data(node_name):
@@ -70,12 +71,14 @@ def create_seed_iso(node_name):
         joliet_path="/meta-data"
     )
 
-    iso.write(str(iso_file))
+    iso.write(
+        str(iso_file)
+    )
+
     iso.close()
 
     print(
-        f"[RAIOS] Generated "
-        f"{iso_file.name}"
+        f"[RAIOS] Generated {iso_file.name}"
     )
 
     return str(iso_file)
@@ -83,31 +86,53 @@ def create_seed_iso(node_name):
 
 def generate_controlplane_seed():
 
-    Path("cp-1-user-data").write_text(
+    Path(
+        "cp-1-user-data"
+    ).write_text(
         generate_controlplane_user_data()
     )
 
-    Path("cp-1-meta-data").write_text(
+    Path(
+        "cp-1-meta-data"
+    ).write_text(
         generate_meta_data("cp-1")
     )
 
-    print("[RAIOS] Generated cp-1-user-data")
-    print("[RAIOS] Generated cp-1-meta-data")
+    print(
+        "[RAIOS] Generated cp-1-user-data"
+    )
 
-    return create_seed_iso("cp-1")
+    print(
+        "[RAIOS] Generated cp-1-meta-data"
+    )
+
+    return create_seed_iso(
+        "cp-1"
+    )
 
 
 def generate_dataplane_seed():
 
-    Path("dp-1-user-data").write_text(
+    Path(
+        "dp-1-user-data"
+    ).write_text(
         generate_dataplane_user_data()
     )
 
-    Path("dp-1-meta-data").write_text(
+    Path(
+        "dp-1-meta-data"
+    ).write_text(
         generate_meta_data("dp-1")
     )
 
-    print("[RAIOS] Generated dp-1-user-data")
-    print("[RAIOS] Generated dp-1-meta-data")
+    print(
+        "[RAIOS] Generated dp-1-user-data"
+    )
 
-    return create_seed_iso("dp-1")
+    print(
+        "[RAIOS] Generated dp-1-meta-data"
+    )
+
+    return create_seed_iso(
+        "dp-1"
+    )

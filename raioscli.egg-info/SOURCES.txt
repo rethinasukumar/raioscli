@@ -19,6 +19,7 @@ raioscli/control/destroy.py
 raioscli/control/doctor.py
 raioscli/control/node.py
 raioscli/control/region.py
+raioscli/control/ssh.py
 raioscli/control/stack.py
 raioscli/control/status.py
 raioscli/core/commands.py
