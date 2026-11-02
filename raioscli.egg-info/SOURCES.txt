@@ -17,6 +17,7 @@ raioscli/control/compute.py
 raioscli/control/deploy.py
 raioscli/control/destroy.py
 raioscli/control/doctor.py
+raioscli/control/node.py
 raioscli/control/region.py
 raioscli/control/stack.py
 raioscli/control/status.py
