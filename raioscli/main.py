@@ -23,6 +23,13 @@ from raioscli.control.destroy import (
     region_destroy
 )
 
+from raioscli.control.node import (
+    node_list,
+    node_show,
+    node_network,
+    node_status
+)
+
 from raioscli.control.doctor import (
     doctor as run_doctor
 )
@@ -37,17 +44,13 @@ from raioscli.control.compute import (
     compute_info
 )
 
-from raioscli.control.node import (
-    node_list,
-    node_show,
-    node_network,
-    node_status
+from raioscli.agents.orchestrator import (
+    Orchestrator
 )
 
 app = typer.Typer(
     help="RAIOS - Unified Multi-Cloud + Hypervisor CLI"
 )
-
 
 # --------------------------------------------------
 # Storage
@@ -80,7 +83,6 @@ def storageb(
         sync
     )
 
-
 # --------------------------------------------------
 # Region
 # --------------------------------------------------
@@ -109,7 +111,6 @@ def region(
             f"[RAIOS] Unknown region action: {action}"
         )
 
-
 # --------------------------------------------------
 # Node
 # --------------------------------------------------
@@ -136,6 +137,41 @@ def node(
             f"[RAIOS] Unknown node action: {action}"
         )
 
+# --------------------------------------------------
+# Agent
+# --------------------------------------------------
+
+@app.command()
+def agent(
+    action: str
+):
+    orchestrator = Orchestrator()
+
+    if action == "start":
+
+        print()
+        print("RAIOS AGENTS")
+        print("-" * 40)
+
+        orchestrator.start()
+
+        print()
+        print("[RAIOS] Agent system started.")
+
+    elif action == "status":
+
+        print()
+        print("RAIOS AGENT STATUS")
+        print("-" * 40)
+
+        print("Controlplane Agent : Running")
+        print("Dataplane Agent    : Running")
+        print("Orchestrator       : Running")
+
+    else:
+        print(
+            f"[RAIOS] Unknown agent action: {action}"
+        )
 
 # --------------------------------------------------
 # Doctor
@@ -144,7 +180,6 @@ def node(
 @app.command()
 def doctor():
     run_doctor()
-
 
 # --------------------------------------------------
 # Compute
@@ -180,7 +215,6 @@ def compute(
         print(
             f"[RAIOS] Unknown compute action: {action}"
         )
-
 
 if __name__ == "__main__":
     app()
