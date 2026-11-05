@@ -1,37 +1,39 @@
+# raioscli/main.py
+
 import typer
 from typing import Optional
 
 from raioscli.core.commands import (
     handle_storageo,
-    handle_storageb
+    handle_storageb,
 )
 
 from raioscli.control.region import (
     init_region,
-    show_region
+    show_region,
 )
 
 from raioscli.control.status import (
-    region_status
+    region_status,
 )
 
 from raioscli.control.deploy import (
-    deploy_region
+    deploy_region,
 )
 
 from raioscli.control.destroy import (
-    region_destroy
+    region_destroy,
 )
 
 from raioscli.control.node import (
     node_list,
     node_show,
     node_network,
-    node_status
+    node_status,
 )
 
 from raioscli.control.doctor import (
-    doctor as run_doctor
+    doctor as run_doctor,
 )
 
 from raioscli.control.compute import (
@@ -41,15 +43,56 @@ from raioscli.control.compute import (
     compute_start,
     compute_stop,
     compute_delete,
-    compute_info
+    compute_info,
 )
 
 from raioscli.agents.orchestrator import (
-    Orchestrator
+    Orchestrator,
 )
+
+# --------------------------------------------------
+# Root App
+# --------------------------------------------------
 
 app = typer.Typer(
     help="RAIOS - Unified Multi-Cloud + Hypervisor CLI"
+)
+
+# --------------------------------------------------
+# Agent Commands
+# --------------------------------------------------
+
+agent_app = typer.Typer(
+    help="RAIOS Agent Framework"
+)
+
+
+@agent_app.command()
+def start():
+    """
+    Start all agents.
+    """
+    orchestrator = Orchestrator()
+    orchestrator.start()
+
+
+@agent_app.command()
+def status():
+    """
+    Show agent status.
+    """
+    print()
+    print("RAIOS AGENT STATUS")
+    print("-" * 40)
+    print("ControlPlaneAgent : Running")
+    print("DataPlaneAgent    : Running")
+    print("Orchestrator      : Active")
+    print()
+
+
+app.add_typer(
+    agent_app,
+    name="agent"
 )
 
 # --------------------------------------------------
@@ -138,42 +181,6 @@ def node(
         )
 
 # --------------------------------------------------
-# Agent
-# --------------------------------------------------
-
-@app.command()
-def agent(
-    action: str
-):
-    orchestrator = Orchestrator()
-
-    if action == "start":
-
-        print()
-        print("RAIOS AGENTS")
-        print("-" * 40)
-
-        orchestrator.start()
-
-        print()
-        print("[RAIOS] Agent system started.")
-
-    elif action == "status":
-
-        print()
-        print("RAIOS AGENT STATUS")
-        print("-" * 40)
-
-        print("Controlplane Agent : Running")
-        print("Dataplane Agent    : Running")
-        print("Orchestrator       : Running")
-
-    else:
-        print(
-            f"[RAIOS] Unknown agent action: {action}"
-        )
-
-# --------------------------------------------------
 # Doctor
 # --------------------------------------------------
 
@@ -215,6 +222,10 @@ def compute(
         print(
             f"[RAIOS] Unknown compute action: {action}"
         )
+
+# --------------------------------------------------
+# Entry
+# --------------------------------------------------
 
 if __name__ == "__main__":
     app()

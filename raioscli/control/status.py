@@ -38,4 +38,3 @@ def region_status():
             print(result.stdout)
 
     print()
-

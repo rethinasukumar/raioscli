@@ -6,19 +6,9 @@ SSH_PUB_KEY = (
     / "id_ed25519.pub"
 )
 
-
 def generate_dataplane_user_data():
 
-    if not SSH_PUB_KEY.exists():
-        raise RuntimeError(
-            "SSH keypair not generated."
-        )
-
-    ssh_key = (
-        SSH_PUB_KEY
-        .read_text()
-        .strip()
-    )
+    ssh_key = SSH_PUB_KEY.read_text().strip()
 
     return f"""#cloud-config
 hostname: dp-1
@@ -29,18 +19,19 @@ users:
     groups: wheel
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
-    lock_passwd: false
-    plain_text_passwd: raios123
+    lock_passwd: true
     ssh_authorized_keys:
       - {ssh_key}
 
-ssh_pwauth: true
+disable_root: true
 
-chpasswd:
-  expire: false
+ssh_pwauth: false
 
 package_update: true
 package_upgrade: true
+
+packages:
+  - openssh-server
 
 write_files:
   - path: /opt/raios/node-role
@@ -50,8 +41,9 @@ write_files:
     content: dp-1
 
 runcmd:
+  - systemctl enable sshd
+  - systemctl start sshd
   - mkdir -p /opt/raios
   - echo dataplane > /opt/raios/node-role
   - echo dp-1 > /opt/raios/node-id
-  - echo "RAIOS Dataplane Bootstrapped" > /var/log/raios-bootstrap.log
 """

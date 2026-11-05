@@ -1,11 +1,10 @@
-PLAN = [
-    "create_vm",
-    "attach_disk",
-    "attach_seed_iso",
-    "disable_secure_boot",
-    "boot_vm"
-]
+class Planner:
+    def __init__(self):
+        self.plan = [
+            "create_vm",
+            "attach_disk",
+            "boot_vm",
+        ]
 
-
-def get_plan():
-    return PLAN
+    def get_plan(self):
+        return self.plan

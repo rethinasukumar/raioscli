@@ -3,7 +3,6 @@ import subprocess
 
 SSH_DIR = Path(".raios/ssh")
 
-
 def ensure_keypair():
     SSH_DIR.mkdir(
         parents=True,
@@ -13,10 +12,10 @@ def ensure_keypair():
     private_key = SSH_DIR / "id_ed25519"
     public_key = SSH_DIR / "id_ed25519.pub"
 
-    if public_key.exists():
+    if private_key.exists() and public_key.exists():
         return (
             str(private_key),
-            str(public_key)
+            public_key.read_text().strip()
         )
 
     subprocess.run(
@@ -32,11 +31,7 @@ def ensure_keypair():
         check=True
     )
 
-    print(
-        "[RAIOS] SSH keypair generated."
-    )
-
     return (
         str(private_key),
-        str(public_key)
+        public_key.read_text().strip()
     )

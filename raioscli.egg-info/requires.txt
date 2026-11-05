@@ -1,3 +1,7 @@
 typer
 rich
 pyyaml
+pycdlib
+
+[dev]
+pytest

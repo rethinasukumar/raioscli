@@ -10,6 +10,7 @@ raioscli.egg-info/entry_points.txt
 raioscli.egg-info/requires.txt
 raioscli.egg-info/top_level.txt
 raioscli/agents/__init__.py
+raioscli/agents/agent.py
 raioscli/agents/base.py
 raioscli/agents/controlplane.py
 raioscli/agents/dataplane.py
@@ -18,12 +19,14 @@ raioscli/agents/executor.py
 raioscli/agents/memory.py
 raioscli/agents/orchestrator.py
 raioscli/agents/planner.py
+raioscli/agents/status.py
 raioscli/agents/test_agent.py
 raioscli/cloudinit/controlplane.py
 raioscli/cloudinit/dataplane.py
 raioscli/cloudinit/seed.py
 raioscli/control/bootstrap.py
 raioscli/control/compute.py
+raioscli/control/connect.py
 raioscli/control/deploy.py
 raioscli/control/destroy.py
 raioscli/control/doctor.py
