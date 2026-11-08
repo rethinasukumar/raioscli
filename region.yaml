@@ -5,8 +5,8 @@ network:
   switch: Default Switch
 
 controlplane:
-  memory: 2048
+  memory: 1024
 
 dataplanes:
-  count: 1
-  memory: 2048
+  count: 3
+  memory: 1024

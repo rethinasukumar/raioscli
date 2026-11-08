@@ -48,8 +48,10 @@ def provider_info():
 
 def list_switches():
     return run_ps(
-        "Get-VMSwitch | "
-        "Select-Object Name,SwitchType"
+        """
+        Get-VMSwitch |
+        Select-Object Name, SwitchType
+        """
     )
 
 
@@ -69,6 +71,7 @@ def create_vm(
         -Generation 2 `
         -SwitchName "{switch_name}"
     """
+
     return run_ps(cmd)
 
 
@@ -86,14 +89,22 @@ def stop_vm(name):
 
 def delete_vm(name):
     cmd = f"""
-    Stop-VM -Name "{name}" -Force -ErrorAction SilentlyContinue
-    Remove-VM -Name "{name}" -Force -ErrorAction SilentlyContinue
+    Stop-VM `
+        -Name "{name}" `
+        -Force `
+        -ErrorAction SilentlyContinue
+
+    Remove-VM `
+        -Name "{name}" `
+        -Force `
+        -ErrorAction SilentlyContinue
     """
+
     return run_ps(cmd)
 
 
 # --------------------------------------------------
-# Disk / ISO
+# Storage
 # --------------------------------------------------
 
 def attach_vhdx(
@@ -105,6 +116,7 @@ def attach_vhdx(
         -VMName "{vm_name}" `
         -Path "{vhdx_path}"
     """
+
     return run_ps(cmd)
 
 
@@ -117,6 +129,7 @@ def attach_seed_iso(
         -VMName "{vm_name}" `
         -Path "{iso_path}"
     """
+
     return run_ps(cmd)
 
 
@@ -130,16 +143,20 @@ def disable_secure_boot(vm_name):
         -VMName "{vm_name}" `
         -EnableSecureBoot Off
     """
+
     return run_ps(cmd)
 
 
 def set_boot_disk_first(vm_name):
     cmd = f"""
-    $disk = Get-VMHardDiskDrive -VMName "{vm_name}"
+    $disk = Get-VMHardDiskDrive `
+        -VMName "{vm_name}"
+
     Set-VMFirmware `
         -VMName "{vm_name}" `
         -FirstBootDevice $disk
     """
+
     return run_ps(cmd)
 
 
@@ -148,9 +165,18 @@ def set_boot_disk_first(vm_name):
 # --------------------------------------------------
 
 def get_vm_state(name):
-    result = run_ps(
-        f'(Get-VM -Name "{name}").State'
-    )
+    cmd = f"""
+    try {{
+        (Get-VM `
+            -Name "{name}" `
+            -ErrorAction Stop).State
+    }}
+    catch {{
+        ""
+    }}
+    """
+
+    result = run_ps(cmd)
 
     return result.stdout.strip()
 
@@ -164,7 +190,8 @@ def wait_for_vm(
     timeout=60
 ):
     for _ in range(timeout):
-        if get_vm_state(name) == "Running":
+
+        if vm_is_running(name):
             return True
 
         time.sleep(1)
@@ -178,60 +205,85 @@ def wait_for_vm(
 
 def list_vms():
     return run_ps(
-        "Get-VM | "
-        "Select-Object Name,State"
+        """
+        Get-VM |
+        Select-Object Name, State
+        """
     )
 
 
 def get_vm_info(name):
     return run_ps(
-        f'Get-VM -Name "{name}" | '
-        'Select-Object Name,State,ProcessorCount,MemoryStartup'
+        f"""
+        Get-VM -Name "{name}" |
+        Select-Object
+            Name,
+            State,
+            ProcessorCount,
+            MemoryStartup
+        """
     )
 
 
 def get_vm_network(name):
     return run_ps(
-        f'Get-VMNetworkAdapter -VMName "{name}" | '
-        'Select-Object VMName,SwitchName,MacAddress,IPAddresses'
+        f"""
+        Get-VMNetworkAdapter `
+            -VMName "{name}" |
+        Select-Object
+            VMName,
+            SwitchName,
+            MacAddress,
+            IPAddresses
+        """
     )
 
 
 def get_vm_ips(name):
     return run_ps(
-        f'(Get-VMNetworkAdapter -VMName "{name}").IPAddresses'
+        f"""
+        (Get-VMNetworkAdapter `
+            -VMName "{name}").IPAddresses
+        """
     )
 
 
 # --------------------------------------------------
-# Region Helpers
+# RAIOS Helpers
 # --------------------------------------------------
 
 def create_controlplane_vm(
     memory_mb=2048,
-    switch_name="Default Switch"
+    switch_name="Default Switch",
+    name="cp-1"
 ):
     return create_vm(
-        "cp-1",
-        memory_mb,
-        switch_name
+        name=name,
+        memory_mb=memory_mb,
+        switch_name=switch_name
     )
 
 
 def create_dataplane_vm(
+    name="dp-1",
     memory_mb=2048,
     switch_name="Default Switch"
 ):
     return create_vm(
-        "dp-1",
-        memory_mb,
-        switch_name
+        name=name,
+        memory_mb=memory_mb,
+        switch_name=switch_name
     )
 
 
-def start_controlplane():
-    return start_vm("cp-1")
+def start_controlplane(
+    name="cp-1"
+):
+    return start_vm(name)
 
 
-def start_dataplane():
-    return start_vm("dp-1")
+def start_dataplane(
+    name="dp-1"
+):
+    return start_vm(name)
+

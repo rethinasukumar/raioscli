@@ -1,0 +1,12 @@
+{
+  "service": "Queue",
+  "version": "0.1",
+  "api": [
+    "create",
+    "delete",
+    "status",
+    "send",
+    "receive",
+    "purge"
+  ]
+}

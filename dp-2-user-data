@@ -1,0 +1,35 @@
+#cloud-config
+hostname: dp-2
+
+users:
+  - default
+  - name: raios
+    groups: wheel
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEGVj/SFoqIu5MIdKo2CsXeV7xMpIEGXl3maxjvWEMm/ rethi@Rethinas-Book-Pro
+
+disable_root: true
+ssh_pwauth: false
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - openssh-server
+
+write_files:
+  - path: /opt/raios/node-role
+    content: dataplane
+
+  - path: /opt/raios/node-id
+    content: dp-2
+
+runcmd:
+  - systemctl enable sshd
+  - systemctl start sshd
+  - mkdir -p /opt/raios
+  - echo dataplane > /opt/raios/node-role
+  - echo dp-2 > /opt/raios/node-id

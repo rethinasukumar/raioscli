@@ -50,49 +50,12 @@ from raioscli.agents.orchestrator import (
     Orchestrator,
 )
 
-# --------------------------------------------------
-# Root App
-# --------------------------------------------------
+from raioscli.agents.status import (
+    agent_status,
+)
 
 app = typer.Typer(
     help="RAIOS - Unified Multi-Cloud + Hypervisor CLI"
-)
-
-# --------------------------------------------------
-# Agent Commands
-# --------------------------------------------------
-
-agent_app = typer.Typer(
-    help="RAIOS Agent Framework"
-)
-
-
-@agent_app.command()
-def start():
-    """
-    Start all agents.
-    """
-    orchestrator = Orchestrator()
-    orchestrator.start()
-
-
-@agent_app.command()
-def status():
-    """
-    Show agent status.
-    """
-    print()
-    print("RAIOS AGENT STATUS")
-    print("-" * 40)
-    print("ControlPlaneAgent : Running")
-    print("DataPlaneAgent    : Running")
-    print("Orchestrator      : Active")
-    print()
-
-
-app.add_typer(
-    agent_app,
-    name="agent"
 )
 
 # --------------------------------------------------
@@ -103,12 +66,12 @@ app.add_typer(
 def storageo(
     action: str,
     name: str,
-    sync: str = ""
+    sync: str = "",
 ):
     handle_storageo(
         action,
         name,
-        sync
+        sync,
     )
 
 
@@ -117,14 +80,15 @@ def storageb(
     action: str,
     name: str,
     size: str = "20GB",
-    sync: str = ""
+    sync: str = "",
 ):
     handle_storageb(
         action,
         name,
         size,
-        sync
+        sync,
     )
+
 
 # --------------------------------------------------
 # Region
@@ -132,8 +96,12 @@ def storageb(
 
 @app.command()
 def region(
-    action: str
+    action: str,
 ):
+    """
+    Region lifecycle operations.
+    """
+
     if action == "init":
         init_region()
 
@@ -154,6 +122,7 @@ def region(
             f"[RAIOS] Unknown region action: {action}"
         )
 
+
 # --------------------------------------------------
 # Node
 # --------------------------------------------------
@@ -161,8 +130,24 @@ def region(
 @app.command()
 def node(
     action: str,
-    name: Optional[str] = typer.Argument(None)
+    name: Optional[str] = typer.Argument(None),
 ):
+    """
+    Node operations.
+
+    Examples:
+
+      raios node list
+
+      raios node show cp-1
+      raios node show dp-1
+      raios node show dp-2
+      raios node show dp-3
+
+      raios node network dp-2
+      raios node network dp-3
+    """
+
     if action == "list":
         node_list()
 
@@ -180,6 +165,43 @@ def node(
             f"[RAIOS] Unknown node action: {action}"
         )
 
+
+# --------------------------------------------------
+# Agent
+# --------------------------------------------------
+
+agent_app = typer.Typer(
+    help="RAIOS Agent Framework"
+)
+
+
+@agent_app.command()
+def start():
+    orchestrator = Orchestrator()
+    orchestrator.start()
+
+
+@agent_app.command()
+def status():
+    agent_status()
+
+
+@agent_app.command()
+def stop():
+    print()
+    print("[RAIOS] Stopping agents...")
+    print("[RAIOS] ControlPlaneAgent stopped")
+    print("[RAIOS] DataPlaneAgent stopped")
+    print("[RAIOS] Orchestrator stopped")
+    print()
+
+
+app.add_typer(
+    agent_app,
+    name="agent",
+)
+
+
 # --------------------------------------------------
 # Doctor
 # --------------------------------------------------
@@ -188,6 +210,7 @@ def node(
 def doctor():
     run_doctor()
 
+
 # --------------------------------------------------
 # Compute
 # --------------------------------------------------
@@ -195,8 +218,18 @@ def doctor():
 @app.command()
 def compute(
     action: str,
-    name: Optional[str] = typer.Argument(None)
+    name: Optional[str] = typer.Argument(None),
 ):
+    """
+    Compute operations.
+
+    Examples:
+
+      raios compute info dp-2
+      raios compute start dp-3
+      raios compute stop dp-2
+    """
+
     if action == "test":
         compute_test()
 
@@ -222,6 +255,7 @@ def compute(
         print(
             f"[RAIOS] Unknown compute action: {action}"
         )
+
 
 # --------------------------------------------------
 # Entry

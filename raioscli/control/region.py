@@ -1,7 +1,6 @@
 from pathlib import Path
 import yaml
 
-
 DEFAULT_REGION = {
     "region": {
         "name": "ap-sg-1"
@@ -13,7 +12,7 @@ DEFAULT_REGION = {
         "memory": 2048
     },
     "dataplanes": {
-        "count": 1,
+        "count": 3,
         "memory": 2048
     }
 }
@@ -55,9 +54,11 @@ def show_region(filename="region.yaml"):
         target.read_text()
     )
 
+    dp_count = data["dataplanes"]["count"]
+
     print()
     print("RAIOS REGION")
-    print("-" * 30)
+    print("-" * 40)
 
     print("Region:")
     print(
@@ -72,6 +73,7 @@ def show_region(filename="region.yaml"):
 
     print()
     print("Controlplane:")
+    print("  Node       : cp-1")
     print(
         f"  Memory MB  : {data['controlplane']['memory']}"
     )
@@ -79,8 +81,14 @@ def show_region(filename="region.yaml"):
     print()
     print("Dataplanes:")
     print(
-        f"  Count      : {data['dataplanes']['count']}"
+        f"  Count      : {dp_count}"
     )
     print(
         f"  Memory MB  : {data['dataplanes']['memory']}"
     )
+
+    print("  Nodes:")
+    for i in range(1, dp_count + 1):
+        print(f"    - dp-{i}")
+
+    print()

@@ -18,19 +18,26 @@ from raioscli.control.bootstrap import (
 )
 
 
+def _verify_seed(seed_iso: str):
+    """
+    Verify that a generated seed ISO exists.
+    """
+    if not seed_iso:
+        raise RuntimeError(
+            "Seed generation returned no path."
+        )
+
+    if not Path(seed_iso).exists():
+        raise RuntimeError(
+            f"Seed ISO not found: {seed_iso}"
+        )
+
+    print(
+        f"[RAIOS] Verified seed: {seed_iso}"
+    )
+
+
 def deploy_region(filename="region.yaml"):
-    """
-    Deploy a complete RAIOS region.
-
-    Workflow:
-    1. Validate region.yaml
-    2. Ensure SSH keypair
-    3. Generate Cloud-Init seed ISOs
-    4. Provision Controlplane
-    5. Provision Dataplane
-    6. Print deployment summary
-    """
-
     target = Path(filename)
 
     if not target.exists():
@@ -56,8 +63,37 @@ def deploy_region(filename="region.yaml"):
     print("[RAIOS] Generating CloudInit...")
 
     try:
+        #
+        # Controlplane Seed
+        #
         cp_seed_iso = generate_controlplane_seed()
-        dp_seed_iso = generate_dataplane_seed()
+
+        _verify_seed(cp_seed_iso)
+
+        #
+        # Dataplane Seeds
+        #
+        dp_count = data["dataplanes"]["count"]
+
+        dp_seed_isos = []
+
+        for index in range(1, dp_count + 1):
+
+            node_name = f"dp-{index}"
+
+            seed_iso = generate_dataplane_seed(
+                node_name
+            )
+
+            _verify_seed(seed_iso)
+
+            dp_seed_isos.append(
+                (
+                    node_name,
+                    seed_iso
+                )
+            )
+
     except Exception as exc:
         print(
             f"[RAIOS] CloudInit generation failed: {exc}"
@@ -66,12 +102,18 @@ def deploy_region(filename="region.yaml"):
 
     print()
 
+    #
+    # Controlplane
+    #
     try:
         print(
             "[RAIOS] Provisioning Controlplane..."
         )
 
-        bootstrap_controlplane()
+        bootstrap_controlplane(
+            "cp-1",
+            cp_seed_iso
+        )
 
         print(
             "[RAIOS] Controlplane ready."
@@ -85,22 +127,30 @@ def deploy_region(filename="region.yaml"):
 
     print()
 
-    try:
-        print(
-            "[RAIOS] Provisioning Dataplane..."
-        )
+    #
+    # Dataplanes
+    #
+    for node_name, seed_iso in dp_seed_isos:
 
-        bootstrap_dataplane()
+        try:
+            print(
+                f"[RAIOS] Provisioning {node_name}..."
+            )
 
-        print(
-            "[RAIOS] Dataplane ready."
-        )
+            bootstrap_dataplane(
+                node_name,
+                seed_iso
+            )
 
-    except Exception as exc:
-        print(
-            f"[RAIOS] Dataplane failed: {exc}"
-        )
-        return
+            print(
+                f"[RAIOS] {node_name} ready."
+            )
+
+        except Exception as exc:
+            print(
+                f"[RAIOS] {node_name} failed: {exc}"
+            )
+            return
 
     print()
     print("RAIOS DEPLOYMENT PLAN")
@@ -118,18 +168,22 @@ def deploy_region(filename="region.yaml"):
     )
 
     print()
-
-    print("Dataplane")
-    print("  Name   : dp-1")
-    print(
-        f"  Memory : "
-        f"{data['dataplanes']['memory']} MB"
-    )
-    print(
-        f"  Seed   : {dp_seed_iso}"
-    )
-
+    print("Dataplanes")
     print()
+
+    for node_name, seed_iso in dp_seed_isos:
+
+        print(
+            f"  Name   : {node_name}"
+        )
+        print(
+            f"  Memory : "
+            f"{data['dataplanes']['memory']} MB"
+        )
+        print(
+            f"  Seed   : {seed_iso}"
+        )
+        print()
 
     print("Network")
     print(
@@ -140,5 +194,4 @@ def deploy_region(filename="region.yaml"):
     print()
     print("Provider : Hyper-V")
     print()
-
     print("[RAIOS] Region deployed.")

@@ -12,7 +12,6 @@ users:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEGVj/SFoqIu5MIdKo2CsXeV7xMpIEGXl3maxjvWEMm/ rethi@Rethinas-Book-Pro
 
 disable_root: true
-
 ssh_pwauth: false
 
 package_update: true

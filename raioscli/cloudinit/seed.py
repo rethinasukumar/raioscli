@@ -10,24 +10,17 @@ from raioscli.cloudinit.dataplane import (
     generate_dataplane_user_data
 )
 
-CLOUDINIT_DIR = Path(
-    ".raios/cloudinit"
-)
+CLOUDINIT_DIR = Path(".raios/cloudinit")
 
 
 def generate_meta_data(node_name):
-
     return f"""instance-id: {node_name}
 local-hostname: {node_name}
 """
 
 
 def create_seed_iso(node_name):
-
-    node_dir = (
-        CLOUDINIT_DIR /
-        node_name
-    )
+    node_dir = CLOUDINIT_DIR / node_name
 
     if node_dir.exists():
         shutil.rmtree(node_dir)
@@ -71,10 +64,7 @@ def create_seed_iso(node_name):
         joliet_path="/meta-data"
     )
 
-    iso.write(
-        str(iso_file)
-    )
-
+    iso.write(str(iso_file))
     iso.close()
 
     print(
@@ -85,54 +75,68 @@ def create_seed_iso(node_name):
 
 
 def generate_controlplane_seed():
+    node_name = "cp-1"
 
     Path(
-        "cp-1-user-data"
+        f"{node_name}-user-data"
     ).write_text(
         generate_controlplane_user_data()
     )
 
     Path(
-        "cp-1-meta-data"
+        f"{node_name}-meta-data"
     ).write_text(
-        generate_meta_data("cp-1")
+        generate_meta_data(node_name)
     )
 
     print(
-        "[RAIOS] Generated cp-1-user-data"
+        f"[RAIOS] Generated {node_name}-user-data"
     )
 
     print(
-        "[RAIOS] Generated cp-1-meta-data"
+        f"[RAIOS] Generated {node_name}-meta-data"
     )
 
-    return create_seed_iso(
-        "cp-1"
-    )
+    return create_seed_iso(node_name)
 
 
-def generate_dataplane_seed():
-
+def generate_dataplane_seed(node_name):
     Path(
-        "dp-1-user-data"
+        f"{node_name}-user-data"
     ).write_text(
-        generate_dataplane_user_data()
+        generate_dataplane_user_data(node_name)
     )
 
     Path(
-        "dp-1-meta-data"
+        f"{node_name}-meta-data"
     ).write_text(
-        generate_meta_data("dp-1")
+        generate_meta_data(node_name)
     )
 
     print(
-        "[RAIOS] Generated dp-1-user-data"
+        f"[RAIOS] Generated {node_name}-user-data"
     )
 
     print(
-        "[RAIOS] Generated dp-1-meta-data"
+        f"[RAIOS] Generated {node_name}-meta-data"
     )
 
-    return create_seed_iso(
-        "dp-1"
-    )
+    return create_seed_iso(node_name)
+
+
+def generate_dataplane_seeds(count):
+    seed_isos = []
+
+    for index in range(1, count + 1):
+
+        node_name = f"dp-{index}"
+
+        seed_iso = generate_dataplane_seed(
+            node_name
+        )
+
+        seed_isos.append(
+            (node_name, seed_iso)
+        )
+
+    return seed_isos

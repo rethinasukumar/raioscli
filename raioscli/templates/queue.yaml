@@ -1,0 +1,9 @@
+queue:
+  name: demo-queue
+
+settings:
+  visibility_timeout: 30
+
+  retention_seconds: 345600
+
+  max_receive_count: 5

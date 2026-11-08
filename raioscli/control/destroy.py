@@ -6,61 +6,44 @@ from raioscli.providers.hyperv import (
 
 
 def region_destroy():
-
     print()
     print("[RAIOS] Destroying region...")
 
     # ------------------------------------
-    # Delete Controlplane
+    # Nodes
     # ------------------------------------
 
-    print(
-        "[RAIOS] Removing cp-1..."
-    )
+    nodes = [
+        "cp-1",
+        "dp-1",
+        "dp-2",
+        "dp-3",
+    ]
 
-    delete_vm(
-        "cp-1"
-    )
+    for node in nodes:
+        print(
+            f"[RAIOS] Removing {node}..."
+        )
 
-    # ------------------------------------
-    # Delete Dataplane
-    # ------------------------------------
-
-    print(
-        "[RAIOS] Removing dp-1..."
-    )
-
-    delete_vm(
-        "dp-1"
-    )
+        delete_vm(
+            node
+        )
 
     # ------------------------------------
     # Remove node disks
     # ------------------------------------
 
-    cp_disk = Path(
-        ".raios/images/cp-1.vhdx"
-    )
-
-    dp_disk = Path(
-        ".raios/images/dp-1.vhdx"
-    )
-
-    if cp_disk.exists():
-
-        cp_disk.unlink()
-
-        print(
-            "[RAIOS] Deleted cp-1.vhdx"
+    for node in nodes:
+        disk = Path(
+            f".raios/images/{node}.vhdx"
         )
 
-    if dp_disk.exists():
+        if disk.exists():
+            disk.unlink()
 
-        dp_disk.unlink()
-
-        print(
-            "[RAIOS] Deleted dp-1.vhdx"
-        )
+            print(
+                f"[RAIOS] Deleted {node}.vhdx"
+            )
 
     print()
     print(
